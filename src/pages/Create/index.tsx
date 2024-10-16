@@ -1,29 +1,29 @@
-import type { FormProps } from "antd";
-import { Space, Form, Input, Button } from "antd";
+import type { FormProps } from 'antd';
+import { Space, Form, Input, Button } from 'antd';
 
-import styles from "./style.module.scss";
-import Header from "../../components/Header";
-import { useForm } from "antd/es/form/Form";
-import ResponsiveTable from "../../components/ResponsiveTable";
+import styles from './style.module.scss';
+import Header from '../../components/Header';
+import { useForm } from 'antd/es/form/Form';
+import ResponsiveTable from '../../components/ResponsiveTable';
+import { LOCAL_DEVICE_KEY, updateLocalStorageItem } from '../../utils';
+import { DeviceDataType } from '../../interfaces';
 
-const onFinish: FormProps["onFinish"] = (values) => {
-  console.log("Success:", values);
+const onFinish: FormProps['onFinish'] = (values) => {
+  updateLocalStorageItem(LOCAL_DEVICE_KEY, {
+    ...values,
+    key: Math.floor(Math.random() * 10000),
+  });
 };
 
-const onFinishFailed: FormProps["onFinishFailed"] = (errorInfo) => {
-  console.log("Failed:", errorInfo);
+const onFinishFailed: FormProps['onFinishFailed'] = (errorInfo) => {
+  console.log('Failed:', errorInfo);
 };
-
-interface RegisterProps {
-  ipAddress: string;
-  port: number;
-  registers: [];
-}
 
 export default function index() {
   const [form] = useForm();
-  const initialValue: RegisterProps = {
-    ipAddress: "",
+  const initialValue: DeviceDataType = {
+    key: `${Math.floor(Math.random() * 10000)}`,
+    ipAddress: '',
     port: 0,
     registers: [],
   };
@@ -34,37 +34,40 @@ export default function index() {
       <div className={styles.content}>
         <Form
           form={form}
-          name='basic'
+          name="basic"
           initialValues={initialValue}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
-          autoComplete='off'
+          autoComplete="off"
         >
           <Space>
-            <Form.Item className={styles.nameInput} name='ipAddress'>
+            <Form.Item
+              rules={[{ required: true, message: '请输入ip地址' }]}
+              className={styles.nameInput}
+              name="ipAddress"
+            >
               {/* TODO:应为IP输入框 */}
-              <Input placeholder='请输入ip' />
+              <Input placeholder="请输入ip" />
             </Form.Item>
             {/* TODO:1.不用label实现冒号2.不用style实现form样式 */}
-            <Form.Item style={{ width: 100 }} label=' ' name='port'>
-              <Input placeholder='端口号' />
+            <Form.Item style={{ width: 100 }} label=" " name="port">
+              <Input placeholder="端口号" />
             </Form.Item>
           </Space>
-          <Form.Item name='registers'>
+          <Form.Item name="registers">
             {/* 添加 TODO: 省略号+hover展示全称 */}
             <ResponsiveTable></ResponsiveTable>
           </Form.Item>
 
           <Form.Item>
             <Space>
-              <Button type='primary' htmlType='submit'>
+              <Button type="primary" htmlType="submit">
                 确认创建
               </Button>
               <Button
-                type='primary'
+                type="primary"
                 onClick={() => {
-                  console.log(123);
-                  form.setFieldValue("registers", []);
+                  form.setFieldValue('registers', []);
                 }}
               >
                 清空

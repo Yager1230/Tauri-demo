@@ -1,10 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Create from "./pages/Create";
-import List from "./pages/List";
-import styles from "./App.module.scss";
-import SideMenu from "./components/SideMenu";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Create from './pages/Create';
+import List from './pages/List';
+import styles from './App.module.scss';
+import SideMenu from './components/SideMenu';
 
-import { Layout, theme } from "antd";
+import { Layout, theme } from 'antd';
 
 const { Sider, Content } = Layout;
 
@@ -31,9 +31,9 @@ function App() {
             }}
           >
             <Routes>
-              <Route path='/create' element={<Create />} />
-              <Route path='/list' element={<List />} />
-              <Route path='/' element={<Create />} />
+              <Route path="/create" element={<Create />} />
+              <Route path="/list" element={<List />} />
+              <Route path="*" element={<List />} />
             </Routes>
           </Content>
         </Layout>

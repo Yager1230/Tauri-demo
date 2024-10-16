@@ -1,9 +1,10 @@
-import { PlusOutlined } from "@ant-design/icons";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import type { GetRef, InputRef, TableProps } from "antd";
-import { Form, Input, Table, Button } from "antd";
+import { PlusOutlined } from '@ant-design/icons';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import type { GetRef, InputRef, TableProps } from 'antd';
+import { Form, Input, Table, Button } from 'antd';
 
-import styles from "./style.module.scss";
+import styles from './style.module.scss';
+import { genKey } from '../../utils';
 
 type FormInstance<T> = GetRef<typeof Form<T>>;
 
@@ -76,7 +77,7 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
       toggleEdit();
       handleSave({ ...record, ...values });
     } catch (errInfo) {
-      console.log("Save failed:", errInfo);
+      console.log('Save failed:', errInfo);
     }
   };
 
@@ -110,7 +111,7 @@ interface DataType {
   name: string;
 }
 
-type ColumnTypes = Exclude<TableProps<DataType>["columns"], undefined>;
+type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
 const Index: React.FC<EditableTableProps> = ({ onChange, value = [] }) => {
   const [count, setCount] = useState(2);
@@ -125,34 +126,34 @@ const Index: React.FC<EditableTableProps> = ({ onChange, value = [] }) => {
     dataIndex: string;
   })[] = [
     {
-      title: "寄存器地址",
+      title: '寄存器地址',
       editable: true,
-      dataIndex: "address",
+      dataIndex: 'address',
       ellipsis: true,
     },
     {
-      title: "最大值",
+      title: '最大值',
       editable: true,
       ellipsis: true,
-      dataIndex: "max",
+      dataIndex: 'max',
     },
     {
-      title: "最小值",
+      title: '最小值',
       editable: true,
       ellipsis: true,
-      dataIndex: "min",
+      dataIndex: 'min',
     },
     {
-      title: "寄存指标",
-      dataIndex: "name",
+      title: '寄存指标',
+      dataIndex: 'name',
       ellipsis: true,
-      width: "30%",
+      width: '30%',
       editable: true,
     },
     {
-      title: "操作",
+      title: '操作',
       width: 75,
-      dataIndex: "operation",
+      dataIndex: 'operation',
       render: (_, record) =>
         value.length >= 1 ? (
           <a onClick={() => handleDelete(record.key)}>删除</a>
@@ -162,13 +163,12 @@ const Index: React.FC<EditableTableProps> = ({ onChange, value = [] }) => {
 
   const handleAdd = () => {
     const newData: DataType = {
-      key: count,
-      name: `Edward King ${count}`,
+      key: genKey(),
+      name: `指标${Math.floor(Math.random() * 10)}`,
       min: 0,
       max: 100,
-      address: `London, Park Lane no. ${count}`,
+      address: `${Math.floor(Math.random() * 100)}`,
     };
-    setCount(count + 1);
     onChange([...value, newData]);
   };
 
@@ -224,7 +224,7 @@ const Index: React.FC<EditableTableProps> = ({ onChange, value = [] }) => {
 
       <Button
         style={{ marginTop: 20 }}
-        type='dashed'
+        type="dashed"
         onClick={() => handleAdd()}
         block
         icon={<PlusOutlined />}
