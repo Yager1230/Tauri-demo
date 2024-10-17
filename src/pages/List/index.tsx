@@ -1,5 +1,13 @@
-import React, { useRef } from 'react';
-import { Button, Flex, Space, Tag } from 'antd';
+import React, { useRef, useState } from 'react';
+import {
+  Button,
+  Dropdown,
+  Flex,
+  MenuProps,
+  Space,
+  Tag,
+  Typography,
+} from 'antd';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { DeviceDataType, RegisterDataType } from '../../interfaces';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +17,7 @@ import {
   updateLocalStorageItem,
 } from '../../utils';
 import styles from './index.module.scss';
+import { DownOutlined } from '@ant-design/icons';
 
 interface Params {
   pageSize?: number;
@@ -18,6 +27,8 @@ interface Params {
 const App: React.FC = () => {
   const navigate = useNavigate();
   const actionRef = useRef<ActionType>();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+  const { Paragraph } = Typography;
 
   const columns: ProColumns<DeviceDataType>[] = [
     {
@@ -36,9 +47,11 @@ const App: React.FC = () => {
       render: (value: RegisterDataType[]) => {
         return (
           <>
-            {value.map((item) => (
-              <Tag key={item.key}>{item.name}</Tag>
-            ))}
+            <Paragraph ellipsis={{ rows: 1, expandable: false }}>
+              {value.map((item) => (
+                <Tag key={item.key}>{item.name}</Tag>
+              ))}
+            </Paragraph>
           </>
         );
       },
@@ -47,19 +60,40 @@ const App: React.FC = () => {
       title: '操作',
       valueType: 'option',
       width: 100,
-      render: (_, data: DeviceDataType) => (
-        <Space>
-          <Button>编辑</Button>
-          <Button
-            onClick={() => {
+      render: (_, data: DeviceDataType) => {
+        const items: MenuProps['items'] = [
+          {
+            label: '编辑',
+            key: 'edit',
+            onClick: () => {},
+          },
+          {
+            label: '删除',
+            key: 'delete',
+            onClick: () => {
               updateLocalStorageItem(LOCAL_DEVICE_KEY, data, 'delete');
               actionRef.current?.reload();
-            }}
-          >
-            删除
-          </Button>
-        </Space>
-      ),
+            },
+          },
+        ];
+        return (
+          <Space>
+            <Dropdown
+              menu={{
+                items,
+              }}
+              trigger={['click']}
+            >
+              <a onClick={(e) => e.preventDefault()}>
+                <Space>
+                  操作
+                  <DownOutlined />
+                </Space>
+              </a>
+            </Dropdown>
+          </Space>
+        );
+      },
     },
   ];
 
@@ -87,11 +121,31 @@ const App: React.FC = () => {
               >
                 创建
               </Button>
+              <Button
+                type="primary"
+                onClick={() => {
+                  if (!selectedRowKeys.length) {
+                    return;
+                  }
+                  updateLocalStorageItem(
+                    LOCAL_DEVICE_KEY,
+                    selectedRowKeys.map((key) => ({ key })) as Array<{
+                      key: string;
+                    }>,
+                    'delete'
+                  );
+                  actionRef.current?.reload();
+                }}
+              >
+                删除
+              </Button>
             </Space>,
           ],
         }}
         rowSelection={{
           alwaysShowAlert: true,
+          selectedRowKeys,
+          onChange: setSelectedRowKeys,
         }}
         rowClassName={() => styles.customRow}
         columns={columns}

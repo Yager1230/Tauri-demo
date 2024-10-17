@@ -1,5 +1,5 @@
 import type { FormProps } from 'antd';
-import { Space, Form, Input, Button } from 'antd';
+import { Space, Form, Input, Button, message } from 'antd';
 
 import styles from './style.module.scss';
 import Header from '../../components/Header';
@@ -8,19 +8,13 @@ import ResponsiveTable from '../../components/ResponsiveTable';
 import { LOCAL_DEVICE_KEY, updateLocalStorageItem } from '../../utils';
 import { DeviceDataType } from '../../interfaces';
 
-const onFinish: FormProps['onFinish'] = (values) => {
-  updateLocalStorageItem(LOCAL_DEVICE_KEY, {
-    ...values,
-    key: Math.floor(Math.random() * 10000),
-  });
-};
-
 const onFinishFailed: FormProps['onFinishFailed'] = (errorInfo) => {
   console.log('Failed:', errorInfo);
 };
 
 export default function index() {
   const [form] = useForm();
+  const [messageApi, contextHolder] = message.useMessage();
   const initialValue: DeviceDataType = {
     key: `${Math.floor(Math.random() * 10000)}`,
     ipAddress: '',
@@ -28,8 +22,19 @@ export default function index() {
     registers: [],
   };
 
+  const onFinish: FormProps['onFinish'] = (values) => {
+    updateLocalStorageItem(LOCAL_DEVICE_KEY, [
+      {
+        ...values,
+        key: Math.floor(Math.random() * 10000),
+      },
+    ]);
+    messageApi.info('创建成功');
+  };
+
   return (
     <div className={styles.container}>
+      {contextHolder}
       <Header></Header>
       <div className={styles.content}>
         <Form
@@ -56,7 +61,7 @@ export default function index() {
           </Space>
           <Form.Item name="registers">
             {/* 添加 TODO: 省略号+hover展示全称 */}
-            <ResponsiveTable></ResponsiveTable>
+            <ResponsiveTable<DeviceDataType>></ResponsiveTable>
           </Form.Item>
 
           <Form.Item>

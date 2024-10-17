@@ -18,7 +18,7 @@ interface Item {
   address: string;
 }
 
-interface EditableTableProps {
+interface EditableTableProps<T> {
   value: DataType[];
   onChange: (value: DataType[]) => void;
 }
@@ -58,7 +58,6 @@ const EditableCell: React.FC<React.PropsWithChildren<EditableCellProps>> = ({
   const [editing, setEditing] = useState(false);
   const inputRef = useRef<InputRef>(null);
   const form = useContext(EditableRowContext)!;
-  const onChange = useContext(EditableTableContext)!;
 
   useEffect(() => {
     if (editing) {
@@ -113,9 +112,7 @@ interface DataType {
 
 type ColumnTypes = Exclude<TableProps<DataType>['columns'], undefined>;
 
-const Index: React.FC<EditableTableProps> = ({ onChange, value = [] }) => {
-  const [count, setCount] = useState(2);
-
+const Index = <T,>({ onChange, value = [] }: EditableTableProps<T>) => {
   const handleDelete = (key: React.Key) => {
     const newData = value.filter((item) => item.key !== key);
     onChange(newData);
