@@ -5,6 +5,7 @@ import styles from './App.module.scss';
 import SideMenu from './components/SideMenu';
 
 import { Layout, theme } from 'antd';
+import Home from './pages/Home';
 
 const { Sider, Content } = Layout;
 
@@ -31,9 +32,10 @@ function App() {
             }}
           >
             <Routes>
+              <Route path="/home" element={<Home />} />
               <Route path="/create" element={<Create />} />
               <Route path="/list" element={<List />} />
-              <Route path="*" element={<List />} />
+              <Route path="*" element={<Home />} />
             </Routes>
           </Content>
         </Layout>
